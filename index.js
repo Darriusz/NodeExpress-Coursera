@@ -3,6 +3,7 @@ const http = require('http');
 const morgan = require('morgan');
 const path = require('path');
 const bodyParser = require ('body-parser');
+const dishRouter = require('./routes/dishRouter');
 
 const hostname = 'localhost';
 const port = 3000;
@@ -11,34 +12,14 @@ const app = express();
 app.use(morgan('dev')); //daje na konsoli inf o komunikacji z serwerem
 app.use(bodyParser.json());
 
-app.all('/dishes', (req, res, next) => {
-	res.statusCode = 200;
-	res.setHeader('Content-Type', 'text/plain');
-	next(); //to continue further operations below for /dishes
-});
+app.use('/dishes', dishRouter); //requests coming to /dishes will be handled by dishRouter
 
-app.get('/dishes', (req, res, next) => {
-	res.end('Later on it will retrieve json data drom a MongoDB here');
-});
 
-app.post('/dishes', (req, res, next) => {
-	res.end('Will add the dish name: ' + req.body.name + 
-		' with the details: ' + req.body.description);
-});
-
-app.put('/dishes', (req, res, next) => {
-	res.statusCode = 403;
-	res.end('PUT operation arbitrarily not supported on dishes');
-});
-
-app.delete('/dishes', (req, res, next) => {
-	res.end('Deleting all the dishes!!!');
-});
-
+//*** REST Representational State Transfer *************************
 
 
 app.get('/dishes/:dishId', (req, res, next) => {
-	res.end('Will details of the dish:' + req.params.dishId + ' to you');
+	res.end('When integrated with MongoDB it will give details of the dish:' + req.params.dishId + ' to you');
 });
 
 app.post('/dishes/:dishId/', (req, res, next) => {
@@ -48,15 +29,15 @@ app.post('/dishes/:dishId/', (req, res, next) => {
 
 app.put('/dishes/:dishId', (req, res, next) => {
 	res.write('Updating the dish: ' + req.params.dishId + "\n");
-	res.end('Will update the dish: ' + req.body.name + 
+	res.end('When integrated with MongoDB it will update the dish: ' + req.body.name + 
 		' with details ' + req.body.description);
 });
 
 app.delete('/dishes/:dishId', (req, res, next) => {
-	res.end('Deleting dish: ' + req.params.dishId);
+	res.end('When integrated with MongoDB it will delete dish: ' + req.params.dishId);
 });
 
-
+//*************end of REST *****************
 
 app.use(express.static(__dirname + '/pub'));
 
